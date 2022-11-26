@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	<title>BlackJack</title>
+</head>
+<body>
+	<div id="start-game" class="vh-100 bg-green parent">
+		<div class="d-flex flex-column align-items-center child">
+			<div class="py-2 card-title">
+				<p>Welcome to Card Game</p>
+			</div>
+			<div>
+				<input id="userData" type="test" value="" placeholder="name">
+			</div>
+			<div class="py-2">
+				<select name="" id="card-game" class="select-width py-1">
+					<option value="blackjack">blackjack</option>
+					<option value="poker">poker</option>
+				</select>
+			</div>
+			<div class="py-3">
+				<button type="submit" id="start-btn" class="btn-green p-1 px-1">Start Game</button>
+			</div>
+		</div>
+	</div>
+	<div id="main-game" class="vh-100 bg-green d-flex flex-column justify-content-center align-items-center"></div>
+	<script src="main.js"></script>
+</body>
+</html>

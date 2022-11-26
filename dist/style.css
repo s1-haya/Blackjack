@@ -1,0 +1,52 @@
+.bg-green{
+	background-color: #1D4434;
+}
+
+.btn-green{
+	color: white;
+	background-color: rgb(22, 198, 22);
+	border-color: rgb(61, 224, 61);
+	font-size: 20px;
+}
+
+.btn-blue{
+	color: white;
+	background-color: rgb(22, 75, 198);
+	border-color: rgb(61, 61, 224);
+	font-size: 20px;
+}
+
+.btn-red{
+	color: white;
+	background-color: rgb(198, 22, 60);
+	border-color: rgb(224, 61, 61);
+	font-size: 20px;
+}
+
+.select-width{
+	width: 185px;
+}
+
+.parent {
+	position: relative;
+  }
+  
+.child {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+  }
+
+  .card-title{
+	font-size: 30px;
+	font-weight: bold;
+	color: white;
+	text-shadow: 1px 1px 0 green,2px 2px 0 green,3px 3px 0 green;
+  }
+
+.radiusBtn{
+	width:3.5rem;
+	height:3.5rem;
+}
+
