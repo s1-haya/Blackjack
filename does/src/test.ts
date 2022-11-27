@@ -19,11 +19,16 @@ class Card {
 class Deck {
     gameType: string;
     cards: Card[];
+    stockPile: number;
+    numberOfPlayers: number;
 
-    constructor(gameType: string) {
+    constructor(gameType: string, numberOfPlayers: number) {
         this.gameType = gameType;
         this.cards = [];
+        this.stockPile = 8;
+        this.numberOfPlayers = numberOfPlayers;
         this.resetDeck();
+        this.shuffle();
     }
 
     shuffle(): void{
@@ -44,7 +49,22 @@ class Deck {
     }
 
     drawOne(): Card{
+        this.reduceDeck();
         return this.cards.pop();
+    }
+
+    reduceDeck(): void{
+        this.stockPile--;
+        if (this.stockPile < 0){
+            alert('Reset the cards in the deck');
+            this.newDeck();
+        }
+    }
+
+    newDeck(): void{
+        this.resetDeck();
+        this.shuffle();
+        this.stockPile = 52;
     }
 }
 
@@ -77,7 +97,6 @@ class Player {
                 break;
             case ('acting'):
                 gameDecision = this.getActAI();
-                // gameDecision = new GameDecision('stand', this.bet);
                 break;
             case ('hit'):
                 gameDecision = this.getActAddAI();
@@ -132,7 +151,7 @@ class Player {
     }
 
     isBlackJack(): boolean{
-        if (this.getHandScore() == 21 && this.hand.length == 2)return true;
+        if (this.getHandScore() == 21 && this.hand.length == 2) return true;
         return false;
     }
 
@@ -149,10 +168,10 @@ class Player {
     }
 
     getActAI(): GameDecision{
-        let gameDecision = new GameDecision(null, null);
         const actionList = ["surrender", "double", "hit", "stand"];
         const randomIndex = this.randomIndex(actionList.length);
-        gameDecision = new GameDecision(actionList[randomIndex], this.bet);
+        let gameDecision = new GameDecision(actionList[randomIndex], this.bet);
+        if (this.isBlackJack()) gameDecision = new GameDecision('blackjack', this.bet);
         return gameDecision;
     }
 
@@ -163,6 +182,7 @@ class Player {
 
     getActUser(): GameDecision{
         let gameDecision = new GameDecision(this.gameStatus, this.bet);
+        if (this.isBlackJack()) gameDecision = new GameDecision('blackjack', this.bet);
         return gameDecision;
     }
 
@@ -198,9 +218,9 @@ class Table {
         this.gameType = gameType;
         this.user = new Player(userData, 'user', this.gameType);
         this.betDenominations = betDenominations;
-        this.deck = new Deck(this.gameType);
         this.house = new Player('house', 'house', this.gameType, -1);
         this.players = this.setPlayers();
+        this.deck = new Deck(this.gameType, 1 + this.players.length);
         this.turnCounter = 0;
         this.gamePhase = 'betting';
         this.resultsLog = [];
@@ -250,6 +270,7 @@ class Table {
         }
         else if(houseScore > 17) {
             this.house.gameStatus = 'stand';
+            if (this.house.isBlackJack()) this.house.gameStatus = 'blackjack';
             return houseScore;
         }
         this.house.hand.push(this.deck.drawOne());
@@ -270,6 +291,7 @@ class Table {
         // await this.houseAction(houseScore);
         houseScore = this.houseAction(houseScore);
         let houseStatus = this.house.gameStatus;
+        
         for (let player of this.players) {
             const playerScore = player.getHandScore();
             this.isScoreBust(playerScore, player); 
@@ -283,8 +305,11 @@ class Table {
     }
 
     blackjackAssignPlayerHands(): void{
-        this.deck.resetDeck();
-        this.deck.shuffle();
+        const playerCard = this.deck.numberOfPlayers * 2;
+        if (this.deck.stockPile < playerCard){
+            alert('Reset the cards in the deck');
+            this.deck.newDeck();
+        }
         this.house.hand.push(this.deck.drawOne());
         this.house.hand.push(this.deck.drawOne());
         for (let player of this.players) {
@@ -315,15 +340,11 @@ class Table {
         switch (this.gamePhase) {
             case ('betting'):
                 this.evaluateMove(currentPlayer);
-                if (this.onLastPlayer()) {
-                    this.gamePhase = 'acting';
-                }
+                if (this.onLastPlayer()) this.gamePhase = 'acting';
                 break;
             case ('acting'):
                 this.evaluateMove(currentPlayer);
-                if (this.allPlayerBet()) {
-                    this.house.gameStatus = 'acting';
-                }
+                if (this.allPlayerBet()) this.house.gameStatus = 'acting';
                 if (this.allPlayerActionsResolved()) {
                     this.gamePhase = 'roundOver';
                     this.blackjackEvaluateAndGetRoundResults();
@@ -336,8 +357,7 @@ class Table {
 
     allPlayerBet(): boolean{
         for (let player of this.players) {
-            if (player.gameStatus == 'betting')
-                return false;
+            if (player.gameStatus == 'betting') return false;
         }
         return true;
     }
@@ -447,14 +467,21 @@ class Info{
 }
 
 class View{
-	static createMainPage(table: Table): void{
+    static createMainPage(table: Table): void{
         Info.config['mainGame'].innerHTML =
         `
-        <div class="col-12">
-            <div class="pt-5">
+        <div class="col-12 center pt-5">
+            <div class="">
                 <p class="m-0 text-center text-white rem3">Dealer</p>
                 <p class="rem1 text-center text-white m-0">Status:&nbsp; ${table.house.gameStatus}&ensp;&ensp;</a>
                 <div id="houseCardDiv" class="d-flex justify-content-center pt-2 pb-4"></div>
+            </div>
+            <div class="">
+                <div class="text-white text-center right">
+                    <h2>Deck</h2>
+                    <div id="deck-card"></div>
+                    <p>${table.deck.stockPile}</p>
+                </div>
             </div>
         </div>
         <div id="playersDiv" class="d-flex justify-content-center"></div>
@@ -465,7 +492,10 @@ class View{
         <div id="newGameDiv" class="d-flex flex-column justify-content-center text-white"></div>
         `
         View.createCardPage(table);
-        Controller.setHouseCard(table);   
+        Controller.setHouseCard(table);
+
+        const deckDiv = document.getElementById("deck-card");
+        deckDiv.append(View.createSecretCard());
     }
 
 	static createSecretCard(): HTMLInputElement{
@@ -475,7 +505,7 @@ class View{
 		cardDiv.classList.add("bg-white", "border", "mx-2");
 		cardDiv.innerHTML =
 		`
-		<div class="text-center">
+		<div class="text-center pt-2">
 			<img src="${Info.config["suitImgURL"][suit]}" alt="" width="50" height="50">
 		</div>
 		<div class="text-center">
@@ -729,11 +759,11 @@ class Controller{
             Controller.setAutomationOrPageAction(table);
         }
         else if(table.gamePhase === 'roundOver'){
-            View.createMainPage(table);
+            // View.createMainPage(table);
             View.createNextGamePage(table);
         }
         else if(table.gamePhase === 'gameOver'){
-            View.createMainPage(table);
+            // View.createMainPage(table);
             View.createGameOver(table);
         }
         else setTimeout(() => Controller.automaticAI(table), 2000);
@@ -829,4 +859,3 @@ class Controller{
 }
 
 Controller.startGame();
-    

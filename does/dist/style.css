@@ -50,3 +50,14 @@
 	height:3.5rem;
 }
 
+
+.center {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+.right {
+    position: absolute;
+    right: 0;
+	padding-right: 15%;
+}
