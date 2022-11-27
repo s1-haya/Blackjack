@@ -12,7 +12,7 @@ This is a competitive game between the casino dealer and the player.<br>
 If the player's card total is closer to 21 than the casino dealer’s, the player wins the game and receives a payout. However, if the player's card total exceeds 21 points, the player loses the game.<br>
 
 ## Why
-Recursion Challenges<br>
+Recursion Project5<br>
 To acquire knowledge of the following<br>
 ● software design<br>
 ● Typescript and OOP Practice<br>
