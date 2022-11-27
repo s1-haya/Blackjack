@@ -47,6 +47,7 @@ class Deck {
         return this.cards.pop();
     }
 }
+
 class Player {
     name: string;
     type: string;
