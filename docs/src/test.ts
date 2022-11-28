@@ -712,7 +712,7 @@ class Controller{
         Info.config['startBtn'].addEventListener('click', function(){
             let userData = <HTMLInputElement>document.getElementById('userData');
             if (userData.value == "") alert('Please fill in your name');
-            if (level == "") alert('Please fill in Easy or Hard')
+            else if (level == "") alert('Please fill in Easy or Hard')
             else {
                 Info.displayNone(Info.config['startGame']);
                 Info.displayBlock(Info.config['mainGame']);
