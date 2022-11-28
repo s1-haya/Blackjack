@@ -61,3 +61,62 @@
     right: 0;
 	padding-right: 15%;
 }
+
+.ECM_RadioInput {
+	padding: 12px 8px;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+  }
+  .ECM_RadioInput:hover {
+	background: rgba(0,0,0,0.05);
+  }
+  .ECM_RadioInput-Input {
+	opacity: 0;
+	width: 0;
+	margin: 0;
+  }
+  .ECM_RadioInput-Input:focus + .ECM_RadioInput-DummyInput {
+	border: solid 2px gray;
+	background: #EEEEEE;
+  }
+  .ECM_RadioInput-Input:checked + .ECM_RadioInput-DummyInput {
+	border: solid 2px gray;
+  }
+  .ECM_RadioInput-Input:checked + .ECM_RadioInput-DummyInput::before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: gray;
+  }
+  .ECM_RadioInput-DummyInput {
+	position: relative;
+	top: 0;
+	left: 0;
+	display: block;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: #fff;
+	border: solid 2px #888;
+  }
+  .ECM_RadioInput-LabelText-Easy {
+	margin-left: 12px;
+	display: block;
+	font-size: 18px;
+	font-weight: bold;
+	color: rgb(0, 115, 255);
+  }
+  .ECM_RadioInput-LabelText-Hard {
+	margin-left: 12px;
+	display: block;
+	font-size: 18px;
+	font-weight: bold;
+	color: red;
+  }

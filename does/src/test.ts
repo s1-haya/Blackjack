@@ -25,7 +25,7 @@ class Deck {
     constructor(gameType: string, numberOfPlayers: number) {
         this.gameType = gameType;
         this.cards = [];
-        this.stockPile = 8;
+        this.stockPile = 52;
         this.numberOfPlayers = numberOfPlayers;
         this.resetDeck();
         this.shuffle();
