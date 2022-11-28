@@ -21,12 +21,15 @@ class Deck {
     cards: Card[];
     stockPile: number;
     numberOfPlayers: number;
+    deckCount: number;
+    levelType: string;
 
-    constructor(gameType: string, numberOfPlayers: number) {
+    constructor(gameType: string, numberOfPlayers: number, levelType: string) {
         this.gameType = gameType;
         this.cards = [];
         this.stockPile = 52;
         this.numberOfPlayers = numberOfPlayers;
+        this.deckCount = (levelType === 'easy') ? 3 : 5;
         this.resetDeck();
         this.shuffle();
     }
@@ -57,6 +60,7 @@ class Deck {
         this.stockPile--;
         if (this.stockPile < 0){
             alert('Reset the cards in the deck');
+            this.deckCount--;
             this.newDeck();
         }
     }
@@ -213,18 +217,20 @@ class Table {
     gamePhase: string;
     resultsLog: string[];
     round: number;
+    levelType: string;
 
-    constructor(userData: string, gameType: string, betDenominations = [5, 20, 50, 100]) {
+    constructor(userData: string, gameType: string, levelType: string) {
         this.gameType = gameType;
         this.user = new Player(userData, 'user', this.gameType);
-        this.betDenominations = betDenominations;
+        this.betDenominations = [5, 20, 50, 100];
         this.house = new Player('house', 'house', this.gameType, -1);
         this.players = this.setPlayers();
-        this.deck = new Deck(this.gameType, 1 + this.players.length);
+        this.deck = new Deck(this.gameType, 1 + this.players.length, levelType);
         this.turnCounter = 0;
         this.gamePhase = 'betting';
         this.resultsLog = [];
         this.round = 0;
+        this.levelType = levelType;
     }
 
     setPlayers(): Player[] {
@@ -268,7 +274,7 @@ class Table {
             this.isScoreBust(houseScore, this.house);
             return houseScore;
         }
-        else if(houseScore > 17) {
+        else if(houseScore >= 17) {
             this.house.gameStatus = 'stand';
             if (this.house.isBlackJack()) this.house.gameStatus = 'blackjack';
             return houseScore;
@@ -308,6 +314,8 @@ class Table {
         const playerCard = this.deck.numberOfPlayers * 2;
         if (this.deck.stockPile < playerCard){
             alert('Reset the cards in the deck');
+            this.deck.deckCount--;
+            if (!(this.deck.deckCount)) return ;
             this.deck.newDeck();
         }
         this.house.hand.push(this.deck.drawOne());
@@ -324,7 +332,12 @@ class Table {
             player.bet = 0;
             player.winAmount = 0;
             player.gameStatus = 'betting';
+            player.chips = (this.levelType === "easy") ? player.chips - 10 : player.chips -30;
+            if (player.type === 'user' && player.chips < 0){
+                player.gameStatus = 'gameOver';
+            }
         }
+        this.resultsLog = [];
         this.house.gameStatus = 'betting';
         this.house.hand = [];
         this.gamePhase = 'betting';
@@ -471,16 +484,26 @@ class View{
         Info.config['mainGame'].innerHTML =
         `
         <div class="col-12 center pt-5">
+            <div class="d-flex flex-column left text-white">
+                <div class="py-2">
+                    <h1 class="m-0">Mode: ${table.levelType.toUpperCase()}</h1>
+                </div>
+                <div class="pt-4">
+                    <h1 class="m-0">DeckRound: ${table.deck.deckCount}</h1>
+                </div>
+            </div>
             <div class="">
                 <p class="m-0 text-center text-white rem3">Dealer</p>
                 <p class="rem1 text-center text-white m-0">Status:&nbsp; ${table.house.gameStatus}&ensp;&ensp;</a>
                 <div id="houseCardDiv" class="d-flex justify-content-center pt-2 pb-4"></div>
             </div>
-            <div class="">
-                <div class="text-white text-center right">
-                    <h2>Deck</h2>
+            <div class="right">
+                <div class="text-center">
+                    <h2 class="text-white">Deck</h2>
                     <div id="deck-card"></div>
-                    <p>${table.deck.stockPile}</p>
+                    <div class="d-flex flex-column pt-2 text-white">
+                        <h2>${table.deck.stockPile}</h2>
+                    </div>
                 </div>
             </div>
         </div>
@@ -488,7 +511,6 @@ class View{
         <div id="actionsAndBetsDiv" class="d-flex justify-content-center pb-5 pt-4 justify-content-center">
                 <div id="betsDiv" class="d-flex flex-column  w-50"></div>
         </div>
-        <div id="nextGameDiv" class="d-flex flex-column justify-content-center"></div>
         <div id="newGameDiv" class="d-flex flex-column justify-content-center text-white"></div>
         `
         View.createCardPage(table);
@@ -615,7 +637,7 @@ class View{
     }
 
     static createNextGamePage(table: Table): void{
-        const nextGameDiv = document.getElementById("nextGameDiv");
+        const nextGameDiv = document.getElementById("newGameDiv");
         nextGameDiv.innerHTML =
         `
         <div class="py-2 d-flex justify-content-center">
@@ -625,28 +647,46 @@ class View{
             <h4>Round${table.round}</h4>
             <p>${table.resultsLog}</p>
         </div>
-
         `
-        table.resultsLog = [];
         Controller.nextGame(table);
     }
 
     static createGameOver(table: Table): void{
+        const action = <HTMLInputElement>document.getElementById('actionsAndBetsDiv');
+        action.innerHTML = "";
+        let res = 'GAME OVER';
+        let bool = true;
+        if (table.gamePhase !== 'gameOver' && table.user.gameStatus !== 'gameOver'){
+            bool = false;
+            if (table.players[1].chips >= 400) res = "HUGE WIN";
+            else if(table.players[1].chips >= 200) res = 'WIN';
+            else res = 'LOSE';
+        }
         const newGameDiv = document.getElementById("newGameDiv");
         newGameDiv.innerHTML =
         `
         <div class="py-2">
-            <h1>GAME OVER</h1>
+            <h1>${res}&nbsp;$${table.players[1].chips}</h1>
         </div>
         <div class=" py-2 d-flex justify-content-center flex-column">
             <a id='newGame-btn' class=" btn btn-success px-5 py-1">New Game</a>
         </div>
-        <div class="py-2">
-            <h4>Round${table.round}</h4>
-            <p>${table.resultsLog}</p>
-        </div>
         `
+        View.resultsLog(table, bool);
         Controller.gameOver();   
+    }
+
+    static resultsLog(table: Table, bool: Boolean): void{
+        if (bool && table.user.gameStatus !== 'gameOver'){
+            const newGameDiv = document.getElementById("newGameDiv");
+            newGameDiv.innerHTML +=
+            `
+            <div  class="py-2">
+                <h4>Round${table.round}</h4>
+                <p>${table.resultsLog}</p>
+            </div>
+            `
+        }
     }
 }
 
@@ -658,14 +698,25 @@ class Controller{
         cardType.addEventListener('change', function(){
             if (cardType.value == 'poker') alert('準備中');
         })
-        
+
+        let level = '';
+        const easyBtn = <HTMLInputElement>document.getElementsByName('level')[0];
+        const hardBtn = <HTMLInputElement>document.getElementsByName('level')[1];
+        easyBtn.addEventListener('change', (event) => {
+            level = (event.currentTarget as HTMLInputElement).value;
+        })
+        hardBtn.addEventListener('change', (event) => {
+            level = (event.currentTarget as HTMLInputElement).value;
+        })
+
         Info.config['startBtn'].addEventListener('click', function(){
             let userData = <HTMLInputElement>document.getElementById('userData');
             if (userData.value == "") alert('Please fill in your name');
+            if (level == "") alert('Please fill in Easy or Hard')
             else {
                 Info.displayNone(Info.config['startGame']);
                 Info.displayBlock(Info.config['mainGame']);
-                const table = new Table(userData.value, cardType.value);
+                const table = new Table(userData.value, cardType.value, level);
                 Controller.mainTable(table);
             }
             
@@ -750,6 +801,7 @@ class Controller{
 
     static mainTable(table: Table): void{
         View.createMainPage(table);
+        Controller.judgeDeck(table);
         const currentPlayer = table.getTurnPlayer();
         if (table.gamePhase === 'betting' && currentPlayer.type === 'user'){
             View.createBetPage(table);
@@ -759,20 +811,26 @@ class Controller{
             Controller.setAutomationOrPageAction(table);
         }
         else if(table.gamePhase === 'roundOver'){
-            // View.createMainPage(table);
+            if (table.deck.deckCount === 0) View.createGameOver(table);
             View.createNextGamePage(table);
         }
         else if(table.gamePhase === 'gameOver'){
-            // View.createMainPage(table);
             View.createGameOver(table);
         }
         else setTimeout(() => Controller.automaticAI(table), 2000);
     }
 
-    static automaticAI(table: Table): void{
-        if (table.gamePhase === 'betting' && table.onFirstPlayer()) table.blackjackAssignPlayerHands();
+    static judgeDeck(table: Table): void{
+        if (table.deck.deckCount == 0 || table.user.gameStatus === 'gameOver') View.createGameOver(table);
+    }
+
+    static async automaticAI(table: Table): Promise<void>{
+        if (table.gamePhase === 'betting' && table.onFirstPlayer()) {
+            table.blackjackAssignPlayerHands();
+        }
         table.haveTurn();
         Controller.mainTable(table);
+
     }
 
     static setAutomationOrPageAction(table: Table): void{
