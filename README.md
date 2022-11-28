@@ -1,11 +1,8 @@
 # Blackjack
 <img width="1429" alt="スクリーンショット 2022-11-28 16 22 13" src="https://user-images.githubusercontent.com/103574382/204220945-cc22dd0c-f8dd-4c8b-8dae-29059b852020.png">
 
-## Installation
-git clone "https://github.com/s1-haya/Blackjack.git" Blackjack<br>
-cd Blackjack<br>
-npm start<br>
-"http://localhost:8080/" <- click + CMD<br>
+## URL
+https://s1-haya.github.io/Blackjack/
 
 ## 遊び方
 カジノディーラーとプレイヤーの対戦型ゲームです。<br>
