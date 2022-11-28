@@ -4,7 +4,7 @@ module.exports = {
     // 指定できる値としては、ファイル名の文字列や、それを並べた配列やオブジェクト
     // 下記はオブジェクトとして指定した例 
     entry: {
-        main: './does/src/test.ts'
+        main: './docs/src/test.ts'
     },  
     output: {
         // モジュールバンドルを行った結果を出力する場所やファイル名の指定
@@ -21,7 +21,7 @@ module.exports = {
     devServer: {
         // webpack-dev-serverの公開フォルダ
         static: {
-            directory: path.join(__dirname, "does/dist"),
+            directory: path.join(__dirname, "docs/dist"),
         },
     },
     // モジュールに適用するルールの設定（ここではローダーの設定を行う事が多い）
