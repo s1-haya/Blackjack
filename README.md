@@ -7,26 +7,30 @@ https://s1-haya.github.io/Blackjack/
 ## 遊び方
 カジノディーラーとプレイヤーの対戦型ゲームです。<br>
 基本ルールはBlackjackと同様です。<br>
-DeckRoundは1回につき52枚のカード<br>
+
+特別ルール<br>
+Deck Roundは1回につき52枚のカード<br>
 カードは徐々に減っていきます。(カウンティング)<br>
 8枚以下になると補充されます。<br>
 
-特別ルール
-DeckRoundが終了時点でプレーヤーのチップが$200以上だった場合<br>
+Deck Roundが終了時点でプレーヤーのチップが$200以上だった場合<br>
 ->プレーヤの勝利<br>
-DeckRoundが終了時点でプレーヤーのチップが$200以下だった場合<br>
-もしくはDeckRound時にプレーヤーのチップが$0以下の場合<br>
+Deck Roundが終了時点でプレーヤーのチップが$200以下だった場合<br>
+もしくはDeck Round時にプレーヤーのチップが$0以下の場合<br>
 ->ディーラーの勝利<br>
 
 ゲームの難易度はeasyとhardから選べます。<br>
 easy<br>
-DeckRound 3回<br>
+Deck Round 3回<br>
 毎ターン後に -$10<br>
+auto Btnあり<br>
 
 hard<br>
-DeckRound 5回<br>
-毎ターン後に -$30<br>
+Deck Round 5回<br>
+毎ターン後に -$20<br>
+auto Btnなし<br>
 
+auto btn: basic strategyに基づいた機能(hard handとsoft hand)
 
 ## Why
 Recursion Project5<br>
@@ -54,8 +58,6 @@ Recursion Project5<br>
 ViewとControllerの実装に関してはある程度汚くてもいいから最低限の全体の流れを意識しました。<br>
 その後に修正や追加を行いました。特に関数は一つにつき一関数を意識しました。<br>
 例えば関数の中に複数の処理内容を修正する場合は別の関数をそれぞれ作成し、それらの処理を統合する関数を作成しました。<br>
-
-
 
 
 
