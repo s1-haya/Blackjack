@@ -47,7 +47,9 @@ Recursion Project5<br>
 (debug)<br>
 3 View, Controller<br>
 (debug)<br>
-4 追加実装,細かいバグや修正<br>
+4 追加実装<br>
+-> カウンティング、ベーシックストラテジー<br>
+細かいバグや修正<br>
 
 ## How
 ブラックジャックのModel designの全体を把握するために紙に書いてから大まかな依存関係を把握した。<br>
