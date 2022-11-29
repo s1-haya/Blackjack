@@ -14,6 +14,11 @@ class Card {
             return 10;
         return parseInt(this.rank);
     }
+
+    isAce(): boolean{
+        if ("A" == this.rank) return true;
+        return false;
+    }
 }
 
 class Deck {
@@ -59,7 +64,7 @@ class Deck {
     reduceDeck(): void{
         this.stockPile--;
         if (this.stockPile < 0){
-            alert('Reset the cards in the deck');
+            alert('Reset the cards in the deck.');
             this.deckCount--;
             this.newDeck();
         }
@@ -282,19 +287,13 @@ class Table {
         this.house.hand.push(this.deck.drawOne());
         houseScore = this.house.getHandScore();
         this.house.gameStatus = 'hit';
-        //thisに難あり→table本体がいるかも
-        // View.createMainPage(this);
         return this.houseAction(houseScore);
     }
 
-    async blackjackEvaluateAndGetRoundResults(): Promise<void>{
+    blackjackEvaluateAndGetRoundResults(): void{
         this.round++;
         let res = '';
-        // await setTimeout(() => this.houseAction(houseScore), 2000);
         let houseScore = this.house.getHandScore();
-        // await setTimeout(() => houseScore = this.houseAction(houseScore), 2000);
-        // houseScore = this.houseAction(houseScore);
-        // await this.houseAction(houseScore);
         houseScore = this.houseAction(houseScore);
         let houseStatus = this.house.gameStatus;
         
@@ -313,7 +312,7 @@ class Table {
     blackjackAssignPlayerHands(): void{
         const playerCard = this.deck.numberOfPlayers * 2;
         if (this.deck.stockPile < playerCard){
-            alert('Reset the cards in the deck');
+            alert('Reset the cards in the deck.');
             this.deck.deckCount--;
             if (!(this.deck.deckCount)) return ;
             this.deck.newDeck();
@@ -332,7 +331,7 @@ class Table {
             player.bet = 0;
             player.winAmount = 0;
             player.gameStatus = 'betting';
-            player.chips = (this.levelType === "easy") ? player.chips - 10 : player.chips -30;
+            player.chips = (this.levelType === "easy") ? player.chips - 10 : player.chips -20;
             if (player.type === 'user' && player.chips < 0){
                 player.gameStatus = 'gameOver';
             }
@@ -448,6 +447,10 @@ interface SuitImgURL{
     [key: string]: string;
 }
 
+interface BasicStrategy{
+    [key: string]: string[];
+}
+
 class Info{
     "S": string;
     "H": string;
@@ -459,12 +462,30 @@ class Info{
         'startGame': <HTMLInputElement>document.getElementById('start-game'),
         'startBtn': <HTMLInputElement>document.getElementById('start-btn'),
         'mainGame': <HTMLInputElement>document.getElementById('main-game'),
-        suitImgURL:<SuitImgURL> {
+        suitImgURL: <SuitImgURL> {
             "S" : "https://recursionist.io/img/spade.png",
             "H" : "https://recursionist.io/img/heart.png",
             "C" : "https://recursionist.io/img/clover.png",
             "D" : "https://recursionist.io/img/diamond.png",
             "?" : "https://recursionist.io/img/questionMark.png"
+        },
+        'hardHand':<BasicStrategy>{
+            "9": ["hit", "double", "double", "double", "double", "hit", "hit", "hit", "hit","hit"],
+            "10": ["double", "double", "double", "double", "double", "double", "double", "double", "hit","hit"],
+            "11": ["double", "double", "double", "double", "double", "double", "double", "double", "double","hit"],
+            "12": ["hit", "hit", "stand", "stand", "stand", "hit", "hit", "hit", "hit","hit"],
+            "13": ["stand", "stand", "stand", "stand", "stand", "hit", "hit", "hit", "hit","hit"],
+            "14": ["stand", "stand", "stand", "stand", "stand", "hit", "hit", "hit", "hit","hit"],
+            "15": ["stand", "stand", "stand", "stand", "stand", "hit", "hit", "hit", "surrender", "hit"],
+            "16": ["stand", "stand", "stand", "stand", "stand", "hit", "hit", "surrender", "surrender", "surrender",],
+        },
+        'softHand': <BasicStrategy>{
+            "13": ["hit", "hit", "hit", "double", "double", "hit", "hit", "hit", "hit","hit"],
+            "14": ["hit", "hit", "hit", "double", "double", "hit", "hit", "hit", "hit","hit"],
+            "15": ["hit", "hit", "double", "double", "double", "hit", "hit", "hit", "hit","hit"],
+            "16": ["hit", "hit", "double", "double", "double", "hit", "hit", "hit", "hit","hit"],
+            "17": ["hit", "double", "double", "double", "double", "hit", "hit", "hit", "hit","hit"],
+            "18": ["stand", "double", "double", "double", "double", "stand", "stand", "hit", "hit","hit"]
         }
     }
 
@@ -631,6 +652,9 @@ class View{
             <div class="py-2">
             <a id="double-btn" class="btn btn-danger px-5 py-1">Double</a>
             </div>
+            <div class="py-2">
+            <a id="auto-btn" class="btn btn-secondary px-5 py-1">Auto</a>
+            </div>
         </div> 
         `
         Controller.actionBtn(table);
@@ -696,9 +720,9 @@ class Controller{
         Info.displayBlock(Info.config['startGame']);
         let cardType = <HTMLInputElement>document.getElementById('card-game');
         cardType.addEventListener('change', function(){
-            if (cardType.value == 'poker') alert('準備中');
+            if (cardType.value == 'poker') alert("No poker currently being played. Please change to blackjack.");
         })
-
+        
         let level = '';
         const easyBtn = <HTMLInputElement>document.getElementsByName('level')[0];
         const hardBtn = <HTMLInputElement>document.getElementsByName('level')[1];
@@ -711,13 +735,16 @@ class Controller{
 
         Info.config['startBtn'].addEventListener('click', function(){
             let userData = <HTMLInputElement>document.getElementById('userData');
-            if (userData.value == "") alert('Please fill in your name');
-            else if (level == "") alert('Please fill in Easy or Hard')
+            if (userData.value == "") alert('Please fill in your name.');
+            else if (level == "") alert('Please fill in Easy or Hard.');
+            else if (cardType.value == "poker") alert("No poker currently being played. Please change to blackjack.");
             else {
                 Info.displayNone(Info.config['startGame']);
                 Info.displayBlock(Info.config['mainGame']);
+                console.log(cardType.value);
                 const table = new Table(userData.value, cardType.value, level);
                 Controller.mainTable(table);
+                return null;
             }
             
         })
@@ -793,10 +820,6 @@ class Controller{
                 i++;
             }
         }
-        // cardParDiv.append(cardDiv);
-        // console.log(card);
-        //document.getElementByIdは不可 (null)
-        //cardDiv.querySelectorAll(`#${player.name}`)はnodeList
     }
 
     static mainTable(table: Table): void{
@@ -804,8 +827,7 @@ class Controller{
         Controller.judgeDeck(table);
         const currentPlayer = table.getTurnPlayer();
         if (table.gamePhase === 'betting' && currentPlayer.type === 'user'){
-            View.createBetPage(table);
-            table.haveTurn();
+            Controller.setGameOverOrPageBet(table);
         }
         else if(table.gamePhase === 'acting' && currentPlayer.type == 'user'){
             Controller.setAutomationOrPageAction(table);
@@ -833,6 +855,17 @@ class Controller{
 
     }
 
+    static setGameOverOrPageBet(table: Table): void{
+        if (table.user.chips <= 0){
+            table.user.gameStatus = 'gameOver';
+            View.createGameOver(table);
+        }
+        else {
+            View.createBetPage(table);
+            table.haveTurn();
+        }
+    }
+
     static setAutomationOrPageAction(table: Table): void{
         if (table.user.isBlackJack() || table.user.getHandScore() > 21 || this.isAutomaticActionBtn(table)){
             table.haveTurn();
@@ -855,20 +888,43 @@ class Controller{
     
     static actionBtn(table: Table): void{
         const action = <HTMLInputElement>document.getElementById('actionsAndBetsDiv');
+        const autoBtn = <HTMLInputElement>action.querySelector("#auto-btn");
         const hitBtn = <HTMLInputElement>action.querySelector("#hit-btn");
         const standBtn = <HTMLInputElement>action.querySelector("#stand-btn");
         const surrenderBtn =<HTMLInputElement> action.querySelector("#surrender-btn");
         const doubleBtn = <HTMLInputElement>action.querySelector("#double-btn");
+
         if (table.user.gameStatus === 'hit'){
             surrenderBtn.classList.add('disabled');
             doubleBtn.classList.add('disabled');
         }
+        if (table.user.hand.length > 2 || table.levelType == 'hard'){
+            autoBtn.classList.add('disabled');
+        }
+
+        Controller.autoBtn(table, autoBtn);
         Controller.hitBtn(table, hitBtn);
         Controller.standBtn(table, standBtn);
         Controller.surrenderBtn(table, surrenderBtn);
         Controller.doubleBtn(table, doubleBtn);
     }
     
+    static autoBtn(table: Table, hitBtn: HTMLInputElement): void{
+        hitBtn.addEventListener("click", function(){
+            table.user.gameStatus = Controller.staticStrategy(table);
+            const userGameStatus = table.user.gameStatus;
+            if (Controller.isDrawOneAction(userGameStatus)){
+                table.user.hand.push(table.deck.drawOne());
+            }
+            Controller.mainTable(table);
+        })
+    }
+
+    static isDrawOneAction(userGameStatus: string): boolean{
+        if (userGameStatus === 'hit' || userGameStatus === 'double') return true;
+        return false;
+    }
+
     static hitBtn(table: Table, hitBtn: HTMLInputElement): void{
         hitBtn.addEventListener("click", function(){
             table.user.gameStatus = 'hit';
@@ -911,9 +967,55 @@ class Controller{
     static gameOver(): void{
         const newGameBtn = document.getElementById('newGame-btn');
         newGameBtn.addEventListener("click", function(){
-            Controller.startGame();
+            location.reload();
         })
+    }
+
+    static staticStrategy(table: Table): string{
+        let userGameStatus = "";
+        const userHand = table.user.hand;
+        const houseHand = table.house.hand[0];
+        const userHandScore = table.user.getHandScore();
+        const houseOneHandScore = houseHand.getRankNumber();
+    
+        console.log("Ace player" + this.isPlayerHandAce(userHand));
+        if (Controller.isPlayerHandAce(userHand)) {
+            userGameStatus = Controller.softHand(userHandScore, houseOneHandScore);
+        }
+        else userGameStatus = Controller.hardHand(userHandScore, houseOneHandScore);
+        return userGameStatus;
+    }
+
+    static isPlayerHandAce(playerHand: Card[]): boolean{
+        for (let playerCard of playerHand){
+            if (playerCard.isAce()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static hardHand(userHandScore: number, houseOneHandScore: number): string{
+        let userGameStatus = "";
+        if (userHandScore <= 8) userGameStatus = "hit";
+        else if (userHandScore >= 17) userGameStatus = "stand";
+        else {
+            const hardHand: string[] = Info.config["hardHand"][userHandScore.toString()];
+            userGameStatus = hardHand[houseOneHandScore - 2];
+        }
+        return userGameStatus;
+    }
+    
+    static softHand(userHandScore: number, houseOneHandScore: number): string{
+        let userGameStatus = "";
+        if (userHandScore >= 19) userGameStatus = "stand";
+        else {
+            const softHand: string[] = Info.config["softHand"][userHandScore.toString()];
+            userGameStatus = softHand[houseOneHandScore - 2];
+        }
+        return userGameStatus;
     }
 }
 
 Controller.startGame();
+
