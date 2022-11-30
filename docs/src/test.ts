@@ -198,6 +198,15 @@ class Player {
     randomIndex(length: number): number{
         return Math.floor(Math.random() * length);
     }
+
+    isPlayerHandAce(): boolean{
+        for (let playerCard of this.hand){
+            if (playerCard.isAce()){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 class GameDecision {
@@ -441,6 +450,41 @@ class Table {
         }
         return res;
     }
+
+    basicStrategy(): string{
+        let userGameStatus = "";
+        const user = this.user;
+        const houseHand = this.house.hand[0];
+        const userHandScore = this.user.getHandScore();
+        const houseOneHandScore = houseHand.getRankNumber();
+
+        if (user.isPlayerHandAce()) {
+            userGameStatus = this.softHand(userHandScore, houseOneHandScore);
+        }
+        else userGameStatus = this.hardHand(userHandScore, houseOneHandScore);
+        return userGameStatus;
+    }
+
+    hardHand(userHandScore: number, houseOneHandScore: number): string{
+        let userGameStatus = "";
+        if (userHandScore <= 8) userGameStatus = "hit";
+        else if (userHandScore >= 17) userGameStatus = "stand";
+        else {
+            const hardHand: string[] = Info.config["hardHand"][userHandScore.toString()];
+            userGameStatus = hardHand[houseOneHandScore - 2];
+        }
+        return userGameStatus;
+    }
+    
+    softHand(userHandScore: number, houseOneHandScore: number): string{
+        let userGameStatus = "";
+        if (userHandScore >= 19) userGameStatus = "stand";
+        else {
+            const softHand: string[] = Info.config["softHand"][userHandScore.toString()];
+            userGameStatus = softHand[houseOneHandScore - 2];
+        }
+        return userGameStatus;
+    }
 }
 
 interface SuitImgURL{
@@ -569,9 +613,9 @@ class View{
             <div class="p-5 mx-4">
                 <p class="m-0 text-white text-center rem3">${player.name}</p>
                 <div class="text-white m-0 py-2 d-flex">
-                    <p class="rem1 text-left m-0">Status:&nbsp; ${player.gameStatus}&ensp;&ensp;</a>
-                    <p class="rem1 text-left m-0">Bet:&nbsp; ${player.bet}&ensp;&ensp;</a>
-                    <p class="rem1 text-left m-0">Chips:&nbsp; ${player.chips}&ensp;&ensp;</a>
+                    <p class="rem1 text-left m-0">Status&nbsp; ${player.gameStatus}&ensp;&ensp;</a>
+                    <p class="rem1 text-left m-0">Bet&nbsp; ${player.bet}&ensp;&ensp;</a>
+                    <p class="rem1 text-left m-0">Chips&nbsp; ${player.chips}&ensp;&ensp;</a>
                 </div>
                 <div id="${player.name}" class="d-flex justify-content-center"></div>
 			</div>
@@ -911,7 +955,7 @@ class Controller{
     
     static autoBtn(table: Table, hitBtn: HTMLInputElement): void{
         hitBtn.addEventListener("click", function(){
-            table.user.gameStatus = Controller.staticStrategy(table);
+            table.user.gameStatus = table.basicStrategy();
             const userGameStatus = table.user.gameStatus;
             if (Controller.isDrawOneAction(userGameStatus)){
                 table.user.hand.push(table.deck.drawOne());
@@ -969,51 +1013,6 @@ class Controller{
         newGameBtn.addEventListener("click", function(){
             location.reload();
         })
-    }
-
-    static staticStrategy(table: Table): string{
-        let userGameStatus = "";
-        const userHand = table.user.hand;
-        const houseHand = table.house.hand[0];
-        const userHandScore = table.user.getHandScore();
-        const houseOneHandScore = houseHand.getRankNumber();
-    
-        console.log("Ace player" + this.isPlayerHandAce(userHand));
-        if (Controller.isPlayerHandAce(userHand)) {
-            userGameStatus = Controller.softHand(userHandScore, houseOneHandScore);
-        }
-        else userGameStatus = Controller.hardHand(userHandScore, houseOneHandScore);
-        return userGameStatus;
-    }
-
-    static isPlayerHandAce(playerHand: Card[]): boolean{
-        for (let playerCard of playerHand){
-            if (playerCard.isAce()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    static hardHand(userHandScore: number, houseOneHandScore: number): string{
-        let userGameStatus = "";
-        if (userHandScore <= 8) userGameStatus = "hit";
-        else if (userHandScore >= 17) userGameStatus = "stand";
-        else {
-            const hardHand: string[] = Info.config["hardHand"][userHandScore.toString()];
-            userGameStatus = hardHand[houseOneHandScore - 2];
-        }
-        return userGameStatus;
-    }
-    
-    static softHand(userHandScore: number, houseOneHandScore: number): string{
-        let userGameStatus = "";
-        if (userHandScore >= 19) userGameStatus = "stand";
-        else {
-            const softHand: string[] = Info.config["softHand"][userHandScore.toString()];
-            userGameStatus = softHand[houseOneHandScore - 2];
-        }
-        return userGameStatus;
     }
 }
 
