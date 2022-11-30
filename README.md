@@ -86,35 +86,14 @@ Deck Roundが0になるまでカジノディーラーとプレイヤーは対戦
  &emsp;Deck Round: 1Deckにつき1Deck Round<br>
  &emsp;カウンティング: 場に出ているカードをカウントし、記憶していくことによって、これから配られるカードを予測するという戦略法<br>
  &emsp;auto btn: ベーシックストラテジーに基づいた機能(ハードハンドとソフトハンド)<br>
- &emsp;ベーシックストラテジー: アクションボタンを決めるための基本戦略法(以下の表）<br>
+ &emsp;ベーシックストラテジー: アクションボタンを決めるための基本戦略法(詳細はこちら https://vegasdocs.com/blackjack/strategy.html）<br>
  &emsp;ハードハンド: プレーヤーの手札に"A"がないベーシックストラテジーの表 (h: hit, s: stand R: surrender, D: Double)<br>
- *例えば　プレーヤー 4,J ディーラー 6の場合<br>
- &emsp;&emsp;&emsp;&emsp;&emsp;s: stand<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ディーラー(オープンカード)   <br>                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2  3  4  5  6  7  8  9 10  A<br>
-       8以下　h  h  h  h  h  h  h  h  h  h<br>
-   プ  9     h  D  D  D  D  h  h  h  h  h<br>
-   レ  10    D  D  D  D  D  D  D  D  h  h<br>
-   ｜  11    D  D  D  D  D  D  D  D  D  h<br>
-   ヤ  12    s  h  s  s  s  h  h  h  h  h<br>
-   の  13    s  s  s  s  s  h  h  h  h  h<br>
-   手  14    s  s  s  s  s  h  h  h  h  h<br>
-   札  15    s  s  s  s  s  h  h  h  R  h<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16    s  s  s  s  s  h  h  R  R  R<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;17 上 s  s  s  s  s  s  s  s  s  s<br>
-       
- ソフトハンド: プレーヤーの手札に"A"があるベーシックストラテジーの表  (h: hit, s: stand, D: Double)<br>
- *例えば　プレーヤー 4,A ディーラー 4の場合<br>
- &emsp;&emsp;&emsp;&emsp;&emsp;D: double<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ディーラー(オープンカード)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2  3  4  5  6  7  8  9  10  A<br>
-&nbsp;&nbsp;&nbsp;&nbsp;プ  A.2.   h  h  h  D  D  h  h  h  h  h<br>
-&nbsp;&nbsp;&nbsp;レ  A.3    h  h  h  D  D  h  h  h  h  h<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;｜  A.4    h  h  D  D  D  h  h  h  h  h<br>
-   ヤ  A.5    h  h  D  D  D  h  h  h  h  h<br>
-   の  A.6    h  D  D  D  D  h  h  h  h  h<br>
-   手  A.7    h  D  D  D  D  h  h  h  h  h<br>
-   札  A.8    s  s  s  s  s  s  s  s  s  s<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A.9    s  s  s  s  s  s  s  s  s  s<br>
+ *例えば　プレーヤー 4,J ディーラー 6の場合;&emsp;->s: stand<br>
+ &emsp;ソフトハンド: プレーヤーの手札に"A"があるベーシックストラテジーの表  (h: hit, s: stand, D: Double)<br>
+ *例えば　プレーヤー 4,A ディーラー 4の場合;&emsp;->D: double<br>
+
+  
+ 
 
 ## Why
 Recursion Project5<br>
