@@ -25,14 +25,14 @@ betする前は手札の中身は分かりません。<br>
 deal後、プレイヤーは2枚、ディーラーは1枚表示されます。<br>
 stand,hit,double,surrender,autoのアクションボタンを用いて対戦します。<br>
 
-&emsp;&emsp;プレーヤー手札の合計がディーラーの手札の合計より大きい場合<br>
-&emsp;&emsp;もしくはディーラーがbustした場合<br>
-&emsp;&emsp;もしくはプレーヤーがblackjackの場合<br>
-&emsp;&emsp;->プレーヤの勝利<br>
-&emsp;&emsp;プレーヤー手札の合計がディーラーの手札の合計より少ない場合<br>
-&emsp;&emsp;もしくはプレーヤーがbustした場合<br>
-&emsp;&emsp;もしくはプレーヤがsurrenderした場合<br>
-&emsp;&emsp;->ディーラーの勝利<br>
+&emsp;プレーヤー手札の合計がディーラーの手札の合計より大きい場合<br>
+&emsp;もしくはディーラーがbustした場合<br>
+&emsp;もしくはプレーヤーがblackjackの場合<br>
+&emsp;->プレーヤの勝利<br>
+&emsp;プレーヤー手札の合計がディーラーの手札の合計より少ない場合<br>
+&emsp;もしくはプレーヤーがbustした場合<br>
+&emsp;もしくはプレーヤがsurrenderした場合<br>
+&emsp;->ディーラーの勝利<br>
 
 【カードの数え方】<br>
 「2～9」　      そのままの数字<br>
@@ -40,18 +40,18 @@ stand,hit,double,surrender,autoのアクションボタンを用いて対戦し�
 「A」         "1" もしくは　"11"(どちらでも良い)<br>
 
 【基本用語】<br>
- status: ディーラーまたは各プレーヤの動き<br>
- chip: お金、$<br>
- bet: $5,$20,$50,$100のボタンからchipを賭けること<br>
- deal: betの合計を提示した後、ディーラーがカードを配ること<br>
- stand: これ以上カードを引かないこと<br>
- hit: カードをもう1枚引くこと<br>
- double: 最初の2枚のカードからあと1枚だけを引くこと。bet額が2倍になること<br>
- surrender: 降参すること。bet額が2分の1になること<br>
- *auto: *ベーシックストラテジーに基づいたボタンのこと(詳細は特別ルール)<br>
- blackjack: 最初の2枚のカードの合計が「21」であること(必ず"A"と"10"に相当するものが入る) bet額が1.5倍になること<br>
- bust: カードの合計が「21」を超えること<br>
- push: 引き分けのこと<br>
+ &emsp;status: ディーラーまたは各プレーヤの動き<br>
+ &emsp;chip: お金、$<br>
+ &emsp;bet: $5,$20,$50,$100のボタンからchipを賭けること<br>
+ &emsp;deal: betの合計を提示した後、ディーラーがカードを配ること<br>
+ &emsp;stand: これ以上カードを引かないこと<br>
+ &emsp;hit: カードをもう1枚引くこと<br>
+ &emsp;double: 最初の2枚のカードからあと1枚だけを引くこと。bet額が2倍になること<br>
+ &emsp;surrender: 降参すること。bet額が2分の1になること<br>
+ &emsp;*auto: *ベーシックストラテジーに基づいたボタンのこと(詳細は特別ルール)<br>
+ &emsp;blackjack: 最初の2枚のカードの合計が「21」であること(必ず"A"と"10"に相当するものが入る) bet額が1.5倍になること<br>
+ &emsp;bust: カードの合計が「21」を超えること<br>
+ &emsp;push: 引き分けのこと<br>
 
 &emsp;特別ルール<br>
 Deck Roundが0になるまでカジノディーラーとプレイヤーは対戦します。<br>
@@ -76,24 +76,22 @@ Deck Roundが0になるまでカジノディーラーとプレイヤーは対戦
 
   ゲームの難易度はeasyとhardから選べます。<br>
   &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;easy&emsp;&emsp;&emsp;hard<br>
-  Deck Round &nbsp;3回　　　&nbsp;5回<br>
+  Deck Round &nbsp;&emsp;3回　　　&nbsp;5回<br>
   毎ターン後に &emsp;-$10    &emsp;-$20<br>
-  auto btn　 &emsp;⭕️     　&emsp;❌<br>
+  auto btn　 &emsp;&emsp;⭕️     　&emsp;&emsp;❌<br>
 
   
  【基本用語】<br>
- Deck: 山札(52枚)<br>
- Deck Round: 1Deckにつき1Deck Round<br>
- カウンティング: 場に出ているカードをカウントし、記憶していくことによって、これから配られるカードを予測するという戦略法<br>
- auto btn: ベーシックストラテジーに基づいた機能(ハードハンドとソフトハンド)<br>
- ベーシックストラテジー: アクションボタンを決めるための基本戦略法(以下の表）<br>
- ハードハンド: プレーヤーの手札に"A"がないベーシックストラテジーの表 (h: hit, s: stand R: surrender, D: Double)<br>
- *例えば　プレーヤー 4, J<br>
- &emsp;&emsp;&emsp;&emsp;&emsp;ディーラー 6   <br>
+ &emsp;Deck: 山札(52枚)<br>
+ &emsp;Deck Round: 1Deckにつき1Deck Round<br>
+ &emsp;カウンティング: 場に出ているカードをカウントし、記憶していくことによって、これから配られるカードを予測するという戦略法<br>
+ &emsp;auto btn: ベーシックストラテジーに基づいた機能(ハードハンドとソフトハンド)<br>
+ &emsp;ベーシックストラテジー: アクションボタンを決めるための基本戦略法(以下の表）<br>
+ &emsp;ハードハンド: プレーヤーの手札に"A"がないベーシックストラテジーの表 (h: hit, s: stand R: surrender, D: Double)<br>
+ *例えば　プレーヤー 4,J ディーラー 6の場合<br>
  &emsp;&emsp;&emsp;&emsp;&emsp;s: stand<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ディーラー(オープンカード)   <br>                        
-             2  3  4  5  6  7  8  9 10  A<br>
-　     8以下　h  h  h  h  h  h  h  h  h  h<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ディーラー(オープンカード)   <br>                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2  3  4  5  6  7  8  9 10  A<br>
+       8以下　h  h  h  h  h  h  h  h  h  h<br>
    プ  9     h  D  D  D  D  h  h  h  h  h<br>
    レ  10    D  D  D  D  D  D  D  D  h  h<br>
    ｜  11    D  D  D  D  D  D  D  D  D  h<br>
@@ -101,20 +99,22 @@ Deck Roundが0になるまでカジノディーラーとプレイヤーは対戦
    の  13    s  s  s  s  s  h  h  h  h  h<br>
    手  14    s  s  s  s  s  h  h  h  h  h<br>
    札  15    s  s  s  s  s  h  h  h  R  h<br>
-       16    s  s  s  s  s  h  h  R  R  R<br>
-       17 上 s  s  s  s  s  s  s  s  s  s<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;16    s  s  s  s  s  h  h  R  R  R<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;17 上 s  s  s  s  s  s  s  s  s  s<br>
        
  ソフトハンド: プレーヤーの手札に"A"があるベーシックストラテジーの表  (h: hit, s: stand, D: Double)<br>
-               ディーラー(オープンカード)<br>
-             2  3  4  5  6  7  8  9  10  A<br>
-   プ  A.2.   h  h  h  D  D  h  h  h  h  h<br>
-   レ  A.3    h  h  h  D  D  h  h  h  h  h<br>
-   ｜  A.4    h  h  D  D  D  h  h  h  h  h<br>
+ *例えば　プレーヤー 4,A ディーラー 4の場合<br>
+ &emsp;&emsp;&emsp;&emsp;&emsp;D: double<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ディーラー(オープンカード)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2  3  4  5  6  7  8  9  10  A<br>
+&nbsp;&nbsp;&nbsp;&nbsp;プ  A.2.   h  h  h  D  D  h  h  h  h  h<br>
+&nbsp;&nbsp;&nbsp;レ  A.3    h  h  h  D  D  h  h  h  h  h<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;｜  A.4    h  h  D  D  D  h  h  h  h  h<br>
    ヤ  A.5    h  h  D  D  D  h  h  h  h  h<br>
    の  A.6    h  D  D  D  D  h  h  h  h  h<br>
    手  A.7    h  D  D  D  D  h  h  h  h  h<br>
    札  A.8    s  s  s  s  s  s  s  s  s  s<br>
-       A.9    s  s  s  s  s  s  s  s  s  s<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A.9    s  s  s  s  s  s  s  s  s  s<br>
 
 ## Why
 Recursion Project5<br>
