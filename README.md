@@ -3,13 +3,13 @@
 ## 説明
 MVCとOOPを意識し、TSで作成したBlackjackです。
 
-【基本用語】
-　OOP(Object-Oriented Programming) モノの作成と操作に基づいて構成されたプログラム
-　MVCモデル Model View Controllerの三つの役割に整理した概念のこと
-  ・Model:表示や入力に関連しない処理
-  ・View:表示や入力に関する処理
-  ・Controller:ViewとModelの橋渡し役
-　TS(TypeScript)　静的言語、JavaScriptを拡張した言語
+【基本用語】<br>
+　OOP(Object-Oriented Programming) モノの作成と操作に基づいて構成されたプログラム<br>
+　MVCモデル Model View Controllerの三つの役割に整理した概念のこと<br>
+  ・Model:表示や入力に関連しない処理<br>
+  ・View:表示や入力に関する処理<br>
+  ・Controller:ViewとModelの橋渡し役<br>
+　TS(TypeScript)　静的言語、JavaScriptを拡張した言語<br>
 
 <img width="1429" alt="スクリーンショット 2022-11-28 16 22 13" src="https://user-images.githubusercontent.com/103574382/204220945-cc22dd0c-f8dd-4c8b-8dae-29059b852020.png">
 
@@ -18,11 +18,13 @@ https://s1-haya.github.io/Blackjack/
 
 ## 遊び方
 カジノディーラーとプレイヤーの対戦型ゲームです。<br>
+
 基本ルール<br>
 カードの数字の合計が「21」に近い方が勝利します。<br>
 betする前は手札の中身は分かりません。<br>
 deal後、プレイヤーは2枚、ディーラーは1枚表示されます。<br>
 stand,hit,double,surrender,autoのアクションボタンを用いて対戦します。<br>
+
   プレーヤー手札の合計がディーラーの手札の合計より大きい場合<br>
   もしくはディーラーがbustした場合<br>
   もしくはプレーヤーがblackjackの場合<br>
@@ -32,29 +34,30 @@ stand,hit,double,surrender,autoのアクションボタンを用いて対戦し�
   もしくはプレーヤがsurrenderした場合<br>
   ->ディーラーの勝利<br>
 
-【カードの数え方】
-「2～9」　      そのままの数字
-「10・J・Q・K」 "10"
-「A」         "1" もしくは　"11"(どちらでも良い)
+【カードの数え方】<br>
+「2～9」　      そのままの数字<br>
+「10・J・Q・K」 "10"<br>
+「A」         "1" もしくは　"11"(どちらでも良い)<br>
 
-【基本用語】
- status: ディーラーまたは各プレーヤの動き
- chip: お金、$
- bet: $5,$20,$50,$100のボタンからchipを賭けること
- deal: betの合計を提示した後、ディーラーがカードを配ること
- stand: これ以上カードを引かないこと
- hit: カードをもう1枚引くこと
- double: 最初の2枚のカードからあと1枚だけを引くこと。bet額が2倍になること
- surrender: 降参すること。bet額が2分の1になること
- *auto: *ベーシックストラテジーに基づいたボタンのこと(詳細は特別ルール)
- blackjack: 最初の2枚のカードの合計が「21」であること(必ず"A"と"10"に相当するものが入る) bet額が1.5倍になること
- bust: カードの合計が「21」を超えること
- push: 引き分けのこと
+【基本用語】<br>
+ status: ディーラーまたは各プレーヤの動き<br>
+ chip: お金、$<br>
+ bet: $5,$20,$50,$100のボタンからchipを賭けること<br>
+ deal: betの合計を提示した後、ディーラーがカードを配ること<br>
+ stand: これ以上カードを引かないこと<br>
+ hit: カードをもう1枚引くこと<br>
+ double: 最初の2枚のカードからあと1枚だけを引くこと。bet額が2倍になること<br>
+ surrender: 降参すること。bet額が2分の1になること<br>
+ *auto: *ベーシックストラテジーに基づいたボタンのこと(詳細は特別ルール)<br>
+ blackjack: 最初の2枚のカードの合計が「21」であること(必ず"A"と"10"に相当するものが入る) bet額が1.5倍になること<br>
+ bust: カードの合計が「21」を超えること<br>
+ push: 引き分けのこと<br>
 
 特別ルール<br>
-Deck Roundが0になるまでカジノディーラーとプレイヤーは対戦します。
-プレーヤの残りのchipsによって勝敗が決まります。
-難易度はEasyとHardがあります。
+Deck Roundが0になるまでカジノディーラーとプレイヤーは対戦します。<br>
+プレーヤの残りのchipsによって勝敗が決まります。<br>
+難易度はEasyとHardがあります。<br>
+
   Deck Roundが終了時点でプレーヤーのチップが$200以上だった場合<br>
   ->プレーヤの勝利<br>
   Deck Roundが終了時点でプレーヤーのチップが$200以下だった場合<br>
@@ -72,45 +75,46 @@ Deck Roundが0になるまでカジノディーラーとプレイヤーは対戦
   ->ディーラーの勝利<br>
 
   ゲームの難易度はeasyとhardから選べます。<br>
-             　easy　　hard<br>
-  Deck Round 　3回　　　5回<br>
-  毎ターン後に 　-$10    -$20<br>
-  auto Btn　  　⭕️     　❌<br>
+  &nbsp;&nbsp;&nbsp;easy   &nbsp;hard<br>
+  Deck Round &nbsp;3回　　　&nbsp;5回<br>
+  毎ターン後に &nbsp;-$10    &nbsp;-$20<br>
+  auto btn　 &nbsp;⭕️     　&nbsp;❌<br>
 
-  auto btn: ベーシックストラテジーに基づいた機能(ハードハンドとソフトハンド)
- 【基本用語】
- Deck: 山札(52枚)
- Deck Round: 1Deckにつき1Deck Round
+  
+ 【基本用語】<br>
+ Deck: 山札(52枚)<br>
+ Deck Round: 1Deckにつき1Deck Round<br>
  カウンティング: 場に出ているカードをカウントし、記憶していくことによって、これから配られるカードを予測するという戦略法<br>
- ベーシックストラテジー: アクションボタンを決めるための基本戦略法(以下の表）
- ハードハンド: プレーヤーの手札に"A"がないベーシックストラテジーの表 (h: hit, s: stand R: surrender, D: Double)
- *例えば　プレーヤー 4, J
-       　ディーラー 6.  
-        {\color{red}s}: stand
-                ディーラー(オープンカード)                           
-             2  3  4  5  6  7  8  9 10  A
-　     8以下　h  h  h  h  h  h  h  h  h  h
-   プ  9     h  D  D  D  D  h  h  h  h  h
-   レ  10    D  D  D  D  D  D  D  D  h  h
-   ｜  11    D  D  D  D  D  D  D  D  D  h
-   ヤ  12    s  h  s  s  s  h  h  h  h  h
-   の  13    s  s  s  s  s  h  h  h  h  h
-   手  14    s  s  s  s  {\color{red}s}  h  h  h  h  h
-   札  15    s  s  s  s  s  h  h  h  R  h
-       16    s  s  s  s  s  h  h  R  R  R
-       17 上 s  s  s  s  s  s  s  s  s  s
+ auto btn: ベーシックストラテジーに基づいた機能(ハードハンドとソフトハンド)<br>
+ ベーシックストラテジー: アクションボタンを決めるための基本戦略法(以下の表）<br>
+ ハードハンド: プレーヤーの手札に"A"がないベーシックストラテジーの表 (h: hit, s: stand R: surrender, D: Double)<br>
+ *例えば　プレーヤー 4, J<br>
+       　ディーラー 6   <br>
+        s: stand<br>
+                ディーラー(オープンカード)   <br>                        
+             2  3  4  5  6  7  8  9 10  A<br>
+　     8以下　h  h  h  h  h  h  h  h  h  h<br>
+   プ  9     h  D  D  D  D  h  h  h  h  h<br>
+   レ  10    D  D  D  D  D  D  D  D  h  h<br>
+   ｜  11    D  D  D  D  D  D  D  D  D  h<br>
+   ヤ  12    s  h  s  s  s  h  h  h  h  h<br>
+   の  13    s  s  s  s  s  h  h  h  h  h<br>
+   手  14    s  s  s  s  s  h  h  h  h  h<br>
+   札  15    s  s  s  s  s  h  h  h  R  h<br>
+       16    s  s  s  s  s  h  h  R  R  R<br>
+       17 上 s  s  s  s  s  s  s  s  s  s<br>
        
- ソフトハンド: プレーヤーの手札に"A"があるベーシックストラテジーの表  (h: hit, s: stand, D: Double)
-               ディーラー(オープンカード)
-             2  3  4  5  6  7  8  9  10  A
-   プ  A.2.   h  h  h  D  D  h  h  h  h  h
-   レ  A.3    h  h  h  D  D  h  h  h  h  h
-   ｜  A.4    h  h  D  D  D  h  h  h  h  h
-   ヤ  A.5    h  h  D  D  D  h  h  h  h  h
-   の  A.6    h  D  D  D  D  h  h  h  h  h
-   手  A.7    h  D  D  D  D  h  h  h  h  h
-   札  A.8    s  s  s  s  s  s  s  s  s  s
-       A.9    s  s  s  s  s  s  s  s  s  s
+ ソフトハンド: プレーヤーの手札に"A"があるベーシックストラテジーの表  (h: hit, s: stand, D: Double)<br>
+               ディーラー(オープンカード)<br>
+             2  3  4  5  6  7  8  9  10  A<br>
+   プ  A.2.   h  h  h  D  D  h  h  h  h  h<br>
+   レ  A.3    h  h  h  D  D  h  h  h  h  h<br>
+   ｜  A.4    h  h  D  D  D  h  h  h  h  h<br>
+   ヤ  A.5    h  h  D  D  D  h  h  h  h  h<br>
+   の  A.6    h  D  D  D  D  h  h  h  h  h<br>
+   手  A.7    h  D  D  D  D  h  h  h  h  h<br>
+   札  A.8    s  s  s  s  s  s  s  s  s  s<br>
+       A.9    s  s  s  s  s  s  s  s  s  s<br>
 
 ## Why
 Recursion Project5<br>
