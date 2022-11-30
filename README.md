@@ -24,7 +24,7 @@ HTML/CSS/Javascript/Typescript/<br>
 学習したMVCモデルを元に設計しました。
 MVCを起用した理由はコードのリファクタリング、拡張、ソフトウェア設計を容易にするためです。
 Modelを設計する際、特に工夫した点は特にゲームの進行を管理するTableクラスの設計です。
-TableクラスはPlayer,Deck,Card,GameDecisionクラス全体を管理するクラスです。
+TableクラスはPlayer、Deck、Card、GameDecisionクラス全体を管理するクラスです。
 Tableクラスを定義することで、ゲームの進行が円滑に進み、データの管理も容易にすることができました。
 #### OOPとTypescript
 OOPとTypescriptを起用した理由はコードの可読性やデータの保守性、拡張性の精度を上げるためです。
