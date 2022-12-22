@@ -1,52 +1,72 @@
 class Card {
-    suit: string;
-    rank: string;
+    private static ace: number = 11;
+    private static jqk: number = 10;
 
-    constructor(suit: string, rank: string) {
+    private suit: string;
+    private rank: string;
+
+    public constructor(suit: string, rank: string) {
         this.suit = suit;
         this.rank = rank;
     }
 
-    getRankNumber(): number{
-        if ("A" == this.rank)
-            return 11;
-        else if ("J" == this.rank || "Q" == this.rank || "K" == this.rank)
-            return 10;
+    public getSuit = (): string => {return this.suit}
+    public getRank = (): string => {return this.rank}
+
+    public getRankNumber(): number{
+        switch (this.rank){
+            case ("A"):
+                return Card.ace;
+            case ("J"):
+            case ("Q"):
+            case ("K"):
+                return Card.jqk;
+        }
         return parseInt(this.rank);
     }
 
-    isAce(): boolean{
-        if ("A" == this.rank) return true;
-        return false;
-    }
+    public isAce = (): boolean => {return "A" == this.rank}
 }
 
 class Deck {
-    gameType: string;
-    cards: Card[];
-    stockPile: number;
-    numberOfPlayers: number;
-    deckCount: number;
-    levelType: string;
+    static deck: number = 52;
+    static easyMode: number = 3;
+    static hardMode: number = 5;
+
+    private gameType: string;
+    private cards: Card[];
+    private stockPile: number;
+    private numberOfPlayers: number;
+    private levelType: string;
+    private deckCount: number;
 
     constructor(gameType: string, numberOfPlayers: number, levelType: string) {
         this.gameType = gameType;
         this.cards = [];
-        this.stockPile = 52;
+        this.stockPile = Deck.deck;
         this.numberOfPlayers = numberOfPlayers;
-        this.deckCount = (levelType === 'easy') ? 3 : 5;
+        this.levelType = levelType;
+        this.deckCount = (this.levelType === 'easy') ? Deck.easyMode : Deck.hardMode;
         this.resetDeck();
         this.shuffle();
     }
 
-    shuffle(): void{
-        for (let i = this.cards.length - 1; i >= 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
-        }
+    public getGameType = (): string => {return this.gameType}
+    public getCards = (): Card[] => {return this.cards}
+    public getStockPile = (): number => {return this.stockPile}
+    public getNumberOfPlayers = (): number => {return this.numberOfPlayers}
+    public getLevelType = (): string => {return this.levelType}
+    public getDeckCount = (): number => {return this.deckCount}
+
+    public setDeckCount = (count: number): void => {this.deckCount = count}
+    
+    public newDeck(): void{
+        this.resetDeck();
+        this.shuffle();
+        this.stockPile = Deck.deck;
     }
 
-    resetDeck(): void{
+    private resetDeck(): void{
         const suit = ["H", "D", "C", "S"];
         const rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         for (let i = 0; i < suit.length; i++) {
@@ -56,12 +76,19 @@ class Deck {
         }
     }
 
-    drawOne(): Card{
+    private shuffle(): void{
+        for (let i = this.cards.length - 1; i >= 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+        }
+    }
+
+    public drawOne(): Card{
         this.reduceDeck();
         return this.cards.pop();
     }
 
-    reduceDeck(): void{
+    public reduceDeck(): void{
         this.stockPile--;
         if (this.stockPile < 0){
             alert('Reset the cards in the deck.');
@@ -69,23 +96,21 @@ class Deck {
             this.newDeck();
         }
     }
+}
 
-    newDeck(): void{
-        this.resetDeck();
-        this.shuffle();
-        this.stockPile = 52;
-    }
+interface GamePlayer{
+    [key: string]: GameDecision[];
 }
 
 class Player {
-    name: string;
-    type: string;
-    gameType: string;
-    hand: Card[];
-    chips: number;
-    bet: number;
-    winAmount: number;
-    gameStatus: string;
+    private name: string;
+    private type: string;
+    private gameType: string;
+    private hand: Card[];
+    private chips: number;
+    private bet: number;
+    private winAmount: number;
+    private gameStatus: string;
 
     constructor(name: string, type: string, gameType: string, chips = 400) {
         this.name = name;
@@ -98,35 +123,40 @@ class Player {
         this.gameStatus = 'betting';
     }
 
-    promptAI(): GameDecision{
-        let gameDecision = new GameDecision(null, null);
-        switch (this.gameStatus) {
-            case ('betting'):
-                gameDecision = this.getBetAI();
-                break;
-            case ('acting'):
-                gameDecision = this.getActAI();
-                break;
-            case ('hit'):
-                gameDecision = this.getActAddAI();
-                break;
-        }
-        return gameDecision;
+    public getName = (): string => {return this.name}
+    public getType = (): string => {return this.type}
+    public getGameType = (): string => {return this.gameType}
+    public getHand = (): Card[] => {return this.hand}
+    public getChips = (): number => {return this.chips}
+    public getBet = (): number => {return this.bet}
+    public getWinAmount = (): number => {return this.winAmount}
+    public getGameStatus = (): string => {return this.gameStatus}
+
+    public setHand = (hand: Card[]): void => {this.hand = hand}
+    public setChips = (winAmount: number): void => {this.chips += winAmount}
+    public setBet = (bet: number): void => {this.bet = bet}
+    public setUserBet = (bet: number): void => {this.bet += bet}
+    public setWinAmount = (winAmount: number): void => {this.winAmount = winAmount}
+    public setGameStatus = (gameStatus: string): void => {this.gameStatus = gameStatus}
+
+    private setGameDecision(gameStatus: string): GameDecision[]{
+        let gameDecision: GamePlayer = {};
+        if(!('betting' === gameStatus || 'acting' === gameStatus || 'hit' === gameStatus)) return  [new GameDecision(null, null), new GameDecision(null, null)];
+        gameDecision['betting'] = [this.getBetAI(), new GameDecision('bet', this.bet)];
+        gameDecision['acting'] = [this.getActAI(), this.getActUser()];
+        gameDecision['hit'] = [this.getActAddAI(), this.getActUser()];
+        return gameDecision[gameStatus];
     }
 
-    promptUser(): GameDecision{
-        let gameDecision =  new GameDecision(null, null);
-        switch (this.gameStatus) {
-            case ('betting'):
-                gameDecision = new GameDecision('bet', this.bet);
-                break;
-            case ('acting'):
-                gameDecision = this.getActUser();
-                break;
-            case ('hit'):
-                gameDecision = this.getActUser();
-                break;
-        }
+    private promptAI(): GameDecision{
+        console.log(this.gameStatus);
+        let gameDecision = this.setGameDecision(this.gameStatus)[0];
+        return gameDecision;
+    }
+    
+    private promptUser(): GameDecision{
+        console.log(this.gameStatus);
+        let gameDecision =  this.setGameDecision(this.gameStatus)[1];
         return gameDecision;
     }
 
@@ -148,21 +178,17 @@ class Player {
         let ace = 0;
 
         for (let card of this.hand) {
-            if (card.rank === "A")
+            if (card.isAce())
                 ace += 1;
             score += card.getRankNumber();
         }
-        while (ace > 0 && score > 21) {
+        for(; ace > 0 && score > 21; ace--){
             score -= 10;
-            ace--;
         }
         return score;
     }
 
-    isBlackJack(): boolean{
-        if (this.getHandScore() == 21 && this.hand.length == 2) return true;
-        return false;
-    }
+    isBlackJack(): boolean{return this.getHandScore() == 21 && this.hand.length == 2};
 
     resetPlayerBet(): void{
         this.chips += this.bet;
@@ -171,15 +197,14 @@ class Player {
 
     getBetAI(): GameDecision{
         const betDenominations = [5, 20, 50, 100];
-        const randomIndex = Math.floor(Math.random() * betDenominations.length);
-        const betAmount = betDenominations[randomIndex];
+        const betAmount = this.getRandomArr(betDenominations);
         return new GameDecision("bet", betAmount);
     }
 
     getActAI(): GameDecision{
         const actionList = ["surrender", "double", "hit", "stand"];
-        const randomIndex = this.randomIndex(actionList.length);
-        let gameDecision = new GameDecision(actionList[randomIndex], this.bet);
+        const action = this.getRandomArr(actionList);
+        let gameDecision = new GameDecision(action, this.bet);
         if (this.isBlackJack()) gameDecision = new GameDecision('blackjack', this.bet);
         return gameDecision;
     }
@@ -195,8 +220,11 @@ class Player {
         return gameDecision;
     }
 
-    randomIndex(length: number): number{
-        return Math.floor(Math.random() * length);
+    private randomIndex(length: number): number{return Math.floor(Math.random() * length)}
+
+    private getRandomArr(arr: any): any{
+        const randomIndex = this.randomIndex(arr.length);
+        return arr[randomIndex];
     }
 
     isPlayerHandAce(): boolean{
@@ -210,28 +238,31 @@ class Player {
 }
 
 class GameDecision {
-    action: string;
-    amount: number;
+    private action: string;
+    private amount: number;
 
     constructor(action: string, amount: number) {
         this.action = action;
         this.amount = amount;
     }
+
+    public getAction(): string{return this.action}
+    public getAmount(): number{return this.amount}
 }
 
 class Table {
-    userData: string;
-    user: Player;
-    gameType: string;
-    betDenominations: number[];
-    deck: Deck;
-    house: Player;
-    players: Player[];
-    turnCounter: number;
-    gamePhase: string;
-    resultsLog: string[];
-    round: number;
-    levelType: string;
+    private userData: string;
+    private gameType: string;
+    private user: Player;
+    private betDenominations: number[];
+    private house: Player;
+    private players: Player[];
+    private deck: Deck;
+    private turnCounter: number;
+    private gamePhase: string;
+    private resultsLog: string[];
+    private round: number;
+    private levelType: string;
 
     constructor(userData: string, gameType: string, levelType: string) {
         this.gameType = gameType;
@@ -247,6 +278,22 @@ class Table {
         this.levelType = levelType;
     }
 
+    getGameType = (): string => {return this.gameType}
+    getUser = (): Player => {return this.user};
+    getBetDenominations = (): number[] => {return this.betDenominations};
+    getHouse = (): Player => {return this.house};
+    getPlayers = (): Player[] => {return this.players};
+    getDeck = (): Deck => {return this.deck};
+    getTurnCounter = (): number => {return this.turnCounter};
+    getGamePhase = (): string => {return this.gamePhase};
+    getResultsLog = (): string[] => {return this.resultsLog};
+    getRound = (): number => {return this.round};
+    getLevelType = (): string => {return this.levelType};
+
+    setGamePhase(gamePhase: string): void{
+        this.gamePhase = gamePhase;
+    }
+
     setPlayers(): Player[] {
         const user = this.user;
         const ai1 = new Player('AI1', 'ai', this.gameType);
@@ -255,21 +302,21 @@ class Table {
     }
 
     evaluateMove(player: Player): void{
-        const gameDecision = player.promptPlayer(player.type);
-        if (gameDecision.action === null && gameDecision.amount === null) return null;
+        const gameDecision = player.promptPlayer(player.getType());
+        if (gameDecision.getAction() === null && gameDecision.getAmount() === null) return null;
         else {
-            player.bet = gameDecision.amount;
-            player.gameStatus = gameDecision.action;
-            switch (gameDecision.action) {
+            player.setBet(gameDecision.getAmount());
+            player.setGameStatus(gameDecision.getAction()); 
+            switch (gameDecision.getAction()) {
                 case ("bet"):
-                    player.gameStatus = 'acting';
+                    player.setGameStatus('acting');
                     break;
                 case ("hit"):
-                    if (player.getHandScore() > 21) player.gameStatus = 'bust';
+                    if (player.getHandScore() > 21) player.setGameStatus('bust');
                     break;
                 case ("double"):
-                    if (player.getHandScore() > 21) player.gameStatus = 'bust';
-                    else player.gameStatus = 'stand';
+                    if (player.getHandScore() > 21) player.setGameStatus('bust');
+                    else player.setGameStatus('stand');
                     break;
             }
             this.aiDrowOne(player);
@@ -278,8 +325,8 @@ class Table {
     }
 
     aiDrowOne(player: Player): void{
-        if (player.type === 'ai' && (player.gameStatus === 'hit' || player.gameStatus === 'double')){
-            player.hand.push(this.deck.drawOne());
+        if (player.getType() === 'ai' && (player.getGameStatus()=== 'hit' || player.getGameStatus() === 'double')){
+            player.getHand().push(this.deck.drawOne());
         }
     }
 
@@ -289,13 +336,13 @@ class Table {
             return houseScore;
         }
         else if(houseScore >= 17) {
-            this.house.gameStatus = 'stand';
-            if (this.house.isBlackJack()) this.house.gameStatus = 'blackjack';
+            this.house.setGameStatus('stand');
+            if (this.house.isBlackJack()) this.house.setGameStatus('blackjack');
             return houseScore;
         }
-        this.house.hand.push(this.deck.drawOne());
+        this.house.getHand().push(this.deck.drawOne());
         houseScore = this.house.getHandScore();
-        this.house.gameStatus = 'hit';
+        this.house.setGameStatus('hit');
         return this.houseAction(houseScore);
     }
 
@@ -304,50 +351,49 @@ class Table {
         let res = '';
         let houseScore = this.house.getHandScore();
         houseScore = this.houseAction(houseScore);
-        let houseStatus = this.house.gameStatus;
+        let houseStatus = this.house.getGameStatus();
         
         for (let player of this.players) {
             const playerScore = player.getHandScore();
             this.isScoreBust(playerScore, player); 
-            let playerStatus = player.gameStatus;
+            let playerStatus = player.getGameStatus();
             let result = this.gameStatusResult(player, houseScore, houseStatus, playerScore, playerStatus);
-            player.chips += (player.winAmount);
-            res += `● name: ${player.name} action: ${playerStatus}, bet: ${player.bet}, won: ${player.winAmount}, result: ${result}<br>`;
+            player.setChips(player.getWinAmount());
+            res += `● name: ${player.getName()} action: ${playerStatus}, bet: ${player.getBet()}, won: ${player.getWinAmount()}, result: ${result}<br>`;
         }
         this.isGameOver();
         this.resultsLog.push(res);
     }
 
     blackjackAssignPlayerHands(): void{
-        const playerCard = this.deck.numberOfPlayers * 2;
-        if (this.deck.stockPile < playerCard){
+        const playerCard = this.deck.getNumberOfPlayers() * 2;
+        if (this.deck.getStockPile() < playerCard){
             alert('Reset the cards in the deck.');
-            this.deck.deckCount--;
-            if (!(this.deck.deckCount)) return ;
+            const deckCount = this.deck.getDeckCount();
+            this.deck.setDeckCount(deckCount - 1);
+            if (!(deckCount)) return ; 
             this.deck.newDeck();
         }
-        this.house.hand.push(this.deck.drawOne());
-        this.house.hand.push(this.deck.drawOne());
+        this.house.getHand().push(this.deck.drawOne(), this.deck.drawOne());
         for (let player of this.players) {
-            player.hand.push(this.deck.drawOne());
-            player.hand.push(this.deck.drawOne());
+            player.getHand().push(this.deck.drawOne(), this.deck.drawOne());
         }
     }
 
     blackjackClearPlayerHandsAndBets(): void{
         for (let player of this.players) {
-            player.hand = [];
-            player.bet = 0;
-            player.winAmount = 0;
-            player.gameStatus = 'betting';
-            player.chips = (this.levelType === "easy") ? player.chips - 10 : player.chips -20;
-            if (player.type === 'user' && player.chips < 0){
-                player.gameStatus = 'gameOver';
+            player.setHand([]);
+            player.setBet(0);
+            player.setWinAmount(0);
+            player.setGameStatus('betting');
+            player.setChips((this.levelType === "easy") ? - 10 : -20);
+            if (player.getType() === 'user' && player.getChips() < 0){
+                player.setGameStatus('gameOver');
             }
         }
         this.resultsLog = [];
-        this.house.gameStatus = 'betting';
-        this.house.hand = [];
+        this.house.setGameStatus('betting');
+        this.house.setHand([]);
         this.gamePhase = 'betting';
         this.turnCounter = 0;
     }
@@ -365,7 +411,7 @@ class Table {
                 break;
             case ('acting'):
                 this.evaluateMove(currentPlayer);
-                if (this.allPlayerBet()) this.house.gameStatus = 'acting';
+                if (this.allPlayerBet()) this.house.setGameStatus('acting');
                 if (this.allPlayerActionsResolved()) {
                     this.gamePhase = 'roundOver';
                     this.blackjackEvaluateAndGetRoundResults();
@@ -378,51 +424,48 @@ class Table {
 
     allPlayerBet(): boolean{
         for (let player of this.players) {
-            if (player.gameStatus == 'betting') return false;
+            if (player.getGameStatus() == 'betting') return false;
         }
         return true;
     }
 
-    onFirstPlayer(): boolean{
-        return this.turnCounter % this.players.length == 0;
-    }
+    onFirstPlayer = (): boolean => {return this.turnCounter % this.players.length == 0}
 
-    onLastPlayer(): boolean{
-        return this.turnCounter % this.players.length == this.players.length - 1;
-    }
+    onLastPlayer = (): boolean => {return this.turnCounter % this.players.length == this.players.length - 1}
 
     allPlayerActionsResolved(): boolean{
         for (let player of this.players) {
-            if (player.gameStatus != "double" && player.gameStatus != 'bust' && player.gameStatus != "stand" && player.gameStatus != 'surrender' && player.gameStatus != 'blackjack')
+            let playerGameStatus = player.getGameStatus();
+            if (playerGameStatus != "double" && playerGameStatus != 'bust' && playerGameStatus != "stand" && playerGameStatus != 'surrender' && playerGameStatus != 'blackjack')
                 return false;
         }
         return true;
     }
 
     isScoreBust(score: number, player: Player): void{
-        if (score > 21) player.gameStatus = 'bust';
+        if (score > 21) player.setGameStatus('bust');
     }
 
     isGameOver(): void{
         for (let player of this.players) {
-            if (player.type === 'user' && player.chips <= 0) this.gamePhase = 'gameOver';
-            else if (player.type === 'ai' && player.chips <= 0) player.chips = 400;
+            if (player.getType() === 'user' && player.getChips() <= 0) this.gamePhase = 'gameOver';
+            else if (player.getType() === 'ai' && player.getChips() <= 0) player.setChips(400);
         }
     }
 
     gameStatusResult(player: Player,  houseScore: number, houseStatus: string, playerScore: number, playerStatus: string): string{
         let result = '';
-        if (player.gameStatus === 'surrender') {
-            player.winAmount = Math.floor(player.bet / 2) * (-1);
+        if (player.getGameStatus() === 'surrender') {
+            player.setWinAmount(Math.floor(player.getBet() / 2) * (-1));
             result = 'SURRENDER';
         }
         else if (player.isBlackJack()) {
-            player.winAmount = player.bet + Math.floor(player.bet * 0.5);
-            player.gameStatus = 'blackjack';
+            player.setWinAmount(player.getBet() + Math.floor(player.getBet() * 0.5)); 
+            player.setGameStatus('blackjack');
             result = 'BLACKJACK';
         }
         else if (playerStatus === 'bust') {
-            player.winAmount = player.bet * (-1);
+            player.setWinAmount(player.getBet() * (-1));
             result = 'BUST';
         }
         else if (houseStatus === 'bust' || houseScore < playerScore) {
@@ -440,12 +483,12 @@ class Table {
     playerWinOrLoseRes(player: Player, playerStatus: string, res: string): string{
         switch (playerStatus) {
             case ('stand'):
-                if(res === 'WIN') player.winAmount = player.bet;
-                else player.winAmount = player.bet * (-1);
+                if(res === 'WIN') player.setWinAmount(player.getBet());
+                else player.setWinAmount(player.getBet() * (-1));
                 break;
             case ('double'):
-                if(res === 'WIN') player.winAmount = player.bet * 2;
-                else player.winAmount = player.bet * (-2);
+                if(res === 'WIN') player.setWinAmount(player.getBet() * 2);
+                else player.setWinAmount(player.getBet() * (-2));
                 break;
         }
         return res;
@@ -454,7 +497,7 @@ class Table {
     basicStrategy(): string{
         let userGameStatus = "";
         const user = this.user;
-        const houseHand = this.house.hand[0];
+        const houseHand = this.house.getHand()[0];
         const userHandScore = this.user.getHandScore();
         const houseOneHandScore = houseHand.getRankNumber();
 
@@ -551,15 +594,15 @@ class View{
         <div class="col-12 center pt-5">
             <div class="d-flex flex-column left text-white">
                 <div class="py-2">
-                    <h1 class="m-0">Mode: ${table.levelType.toUpperCase()}</h1>
+                    <h1 class="m-0">Mode: ${table.getLevelType().toUpperCase()}</h1>
                 </div>
                 <div class="pt-4">
-                    <h1 class="m-0">DeckRound: ${table.deck.deckCount}</h1>
+                    <h1 class="m-0">DeckRound: ${table.getDeck().getDeckCount()}</h1>
                 </div>
             </div>
             <div class="">
                 <p class="m-0 text-center text-white rem3">Dealer</p>
-                <p class="rem1 text-center text-white m-0">Status:&nbsp; ${table.house.gameStatus}&ensp;&ensp;</a>
+                <p class="rem1 text-center text-white m-0">Status:&nbsp; ${table.getHouse().getGameStatus()}&ensp;&ensp;</a>
                 <div id="houseCardDiv" class="d-flex justify-content-center pt-2 pb-4"></div>
             </div>
             <div class="right">
@@ -567,7 +610,7 @@ class View{
                     <h2 class="text-white">Deck</h2>
                     <div id="deck-card"></div>
                     <div class="d-flex flex-column pt-2 text-white">
-                        <h2>${table.deck.stockPile}</h2>
+                        <h2>${table.getDeck().getStockPile()}</h2>
                     </div>
                 </div>
             </div>
@@ -607,17 +650,17 @@ class View{
         cardParDiv.innerHTML = "";
 		const cardDiv = <HTMLInputElement>document.createElement("div");
 		cardDiv.classList.add("d-flex", "justify-content-center");
-		for (let player of table.players){
+		for (let player of table.getPlayers()){
 			cardDiv.innerHTML += 
 			`
             <div class="p-5 mx-4">
-                <p class="m-0 text-white text-center rem3">${player.name}</p>
+                <p class="m-0 text-white text-center rem3">${player.getName()}</p>
                 <div class="text-white m-0 py-2 d-flex">
-                    <p class="rem1 text-left m-0">Status&nbsp; ${player.gameStatus}&ensp;&ensp;</a>
-                    <p class="rem1 text-left m-0">Bet&nbsp; ${player.bet}&ensp;&ensp;</a>
-                    <p class="rem1 text-left m-0">Chips&nbsp; ${player.chips}&ensp;&ensp;</a>
+                    <p class="rem1 text-left m-0">Status&nbsp; ${player.getGameStatus()}&ensp;&ensp;</a>
+                    <p class="rem1 text-left m-0">Bet&nbsp; ${player.getBet()}&ensp;&ensp;</a>
+                    <p class="rem1 text-left m-0">Chips&nbsp; ${player.getChips()}&ensp;&ensp;</a>
                 </div>
-                <div id="${player.name}" class="d-flex justify-content-center"></div>
+                <div id="${player.getName()}" class="d-flex justify-content-center"></div>
 			</div>
             `
             Controller.setPlayerCard(table, cardDiv, player);
@@ -626,8 +669,8 @@ class View{
 	}
 
     static createCard(playerCard: Card): HTMLInputElement{
-        const suit: string = playerCard.suit;
-        const rank: string = playerCard.rank;
+        const suit: string = playerCard.getSuit();
+        const rank: string = playerCard.getRank();
         const cardDiv = <HTMLInputElement>document.createElement("div");
 		cardDiv.classList.add("bg-white", "border", "mx-2");
 		cardDiv.innerHTML =
@@ -647,13 +690,13 @@ class View{
         betDiv.innerHTML +=
         `
         <div class="pb-5">
-            <p class="m-0 text-center text-white rem2">Current Money: $${table.user.chips}</p>
-            <p class="m-0 text-center text-white rem3">Bet: $${table.user.bet}</p>
+            <p class="m-0 text-center text-white rem2">Current Money: $${table.getUser().getChips()}</p>
+            <p class="m-0 text-center text-white rem3">Bet: $${table.getUser().getBet()}</p>
         </div>
         `
         const bets = document.createElement("div");
         bets.classList.add("d-flex", "justify-content-center");
-        for (let bet of table.betDenominations){
+        for (let bet of table.getBetDenominations()){
             bets.innerHTML += 
             `
 			<div class="input-group px-4">
@@ -712,8 +755,8 @@ class View{
             <a id='nextGame-btn' class="text-white btn btn-success px-5 py-1">Next Game</a>
         </div>
         <div class="py-2 text-white">
-            <h4>Round${table.round}</h4>
-            <p>${table.resultsLog}</p>
+            <h4>Round${table.getRound()}</h4>
+            <p>${table.getResultsLog()}</p>
         </div>
         `
         Controller.nextGame(table);
@@ -724,17 +767,17 @@ class View{
         action.innerHTML = "";
         let res = 'GAME OVER';
         let bool = true;
-        if (table.gamePhase !== 'gameOver' && table.user.gameStatus !== 'gameOver'){
+        if (table.getGamePhase() !== 'gameOver' && table.getUser().getGameStatus() !== 'gameOver'){
             bool = false;
-            if (table.players[1].chips >= 400) res = "HUGE WIN";
-            else if(table.players[1].chips >= 200) res = 'WIN';
+            if (table.getPlayers()[1].getChips() >= 400) res = "HUGE WIN";
+            else if(table.getPlayers()[1].getChips() >= 200) res = 'WIN';
             else res = 'LOSE';
         }
         const newGameDiv = document.getElementById("newGameDiv");
         newGameDiv.innerHTML =
         `
         <div class="py-2">
-            <h1>${res}&nbsp;$${table.players[1].chips}</h1>
+            <h1>${res}&nbsp;$${table.getPlayers()[1].getChips()}</h1>
         </div>
         <div class=" py-2 d-flex justify-content-center flex-column">
             <a id='newGame-btn' class=" btn btn-success px-5 py-1">New Game</a>
@@ -745,13 +788,13 @@ class View{
     }
 
     static resultsLog(table: Table, bool: Boolean): void{
-        if (bool && table.user.gameStatus !== 'gameOver'){
+        if (bool && table.getUser().getGameStatus() !== 'gameOver'){
             const newGameDiv = document.getElementById("newGameDiv");
             newGameDiv.innerHTML +=
             `
             <div  class="py-2">
-                <h4>Round${table.round}</h4>
-                <p>${table.resultsLog}</p>
+                <h4>Round${table.getRound()}</h4>
+                <p>${table.getResultsLog()}</p>
             </div>
             `
         }
@@ -806,11 +849,11 @@ class Controller{
     }
 
     static setLimitedBet(table: Table, clickedBet: number, betDiv: HTMLInputElement): void{
-        const userChips = table.user.chips;
-        const userBet = table.user.bet;
+        const userChips = table.getUser().getChips();
+        const userBet = table.getUser().getBet();
         if (userBet + clickedBet > userChips) alert("Exceed the limit. You can't no more bet.");
         else {
-            table.user.bet += clickedBet;
+            table.getUser().setUserBet(clickedBet);
             betDiv.innerHTML = "";
             View.createBetPage(table);
         }
@@ -820,47 +863,47 @@ class Controller{
         const betDiv = document.getElementById('betsDiv');
         const resetBtn = document.getElementById('reset-btn');
         resetBtn.addEventListener('click', function(){
-            table.user.bet = 0;
+            table.getUser().setBet(0);
             betDiv.innerHTML = "";
             View.createBetPage(table);
         })
         
         const betBtn = document.getElementById('bet-btn');
         betBtn.addEventListener('click', function(){
-            if (table.user.bet === 0) alert('please bet money!');
+            if (table.getUser().getBet() === 0) alert('please bet money!');
             else Controller.mainTable(table);
         })   
     }
 
     static setHouseCard(table: Table): void{
         const houseCardDiv = document.getElementById("houseCardDiv");
-        if (table.gamePhase === 'betting'){
+        if (table.getGamePhase() === 'betting'){
             houseCardDiv.append(View.createSecretCard());
             houseCardDiv.append(View.createSecretCard());
         }
-        else if(table.gamePhase === 'acting'){
-            houseCardDiv.append(View.createCard(table.house.hand[0]));
+        else if(table.getGamePhase() === 'acting'){
+            houseCardDiv.append(View.createCard(table.getHouse().getHand()[0]));
             houseCardDiv.append(View.createSecretCard());
         }
         else{
             let i = 0;
-            while(table.house.hand.length != i){
-                houseCardDiv.append(View.createCard(table.house.hand[i]));
+            while(table.getHouse().getHand().length != i){
+                houseCardDiv.append(View.createCard(table.getHouse().getHand()[i]));
                 i++;
             }
         }
     }
 
     static setPlayerCard(table: Table, cardDiv: HTMLInputElement, player: Player): void{
-        const card = cardDiv.querySelectorAll(`#${player.name}`)[0];
-        if (table.gamePhase === 'betting'){
+        const card = cardDiv.querySelectorAll(`#${player.getName()}`)[0];
+        if (table.getGamePhase() === 'betting'){
             card.append(View.createSecretCard());
             card.append(View.createSecretCard());
         }
         else{
             let i = 0;
-            while(player.hand.length != i){
-                card.append(View.createCard(player.hand[i]));
+            while(player.getHand().length != i){
+                card.append(View.createCard(player.getHand()[i]));
                 i++;
             }
         }
@@ -870,28 +913,28 @@ class Controller{
         View.createMainPage(table);
         Controller.judgeDeck(table);
         const currentPlayer = table.getTurnPlayer();
-        if (table.gamePhase === 'betting' && currentPlayer.type === 'user'){
+        if (table.getGamePhase() === 'betting' && currentPlayer.getType() === 'user'){
             Controller.setGameOverOrPageBet(table);
         }
-        else if(table.gamePhase === 'acting' && currentPlayer.type == 'user'){
+        else if(table.getGamePhase() === 'acting' && currentPlayer.getType() == 'user'){
             Controller.setAutomationOrPageAction(table);
         }
-        else if(table.gamePhase === 'roundOver'){
-            if (table.deck.deckCount === 0) View.createGameOver(table);
+        else if(table.getGamePhase() === 'roundOver'){
+            if (!(table.getDeck().getDeckCount())) View.createGameOver(table);
             View.createNextGamePage(table);
         }
-        else if(table.gamePhase === 'gameOver'){
+        else if(table.getGamePhase() === 'gameOver'){
             View.createGameOver(table);
         }
         else setTimeout(() => Controller.automaticAI(table), 2000);
     }
 
     static judgeDeck(table: Table): void{
-        if (table.deck.deckCount == 0 || table.user.gameStatus === 'gameOver') View.createGameOver(table);
+        if ((!(table.getDeck().getDeckCount())) || table.getUser().getGameStatus() === 'gameOver') View.createGameOver(table);
     }
 
     static async automaticAI(table: Table): Promise<void>{
-        if (table.gamePhase === 'betting' && table.onFirstPlayer()) {
+        if (table.getGamePhase() === 'betting' && table.onFirstPlayer()) {
             table.blackjackAssignPlayerHands();
         }
         table.haveTurn();
@@ -900,8 +943,8 @@ class Controller{
     }
 
     static setGameOverOrPageBet(table: Table): void{
-        if (table.user.chips <= 0){
-            table.user.gameStatus = 'gameOver';
+        if (table.getUser().getChips() <= 0){
+            table.getUser().setGameStatus('gameOver');
             View.createGameOver(table);
         }
         else {
@@ -911,7 +954,7 @@ class Controller{
     }
 
     static setAutomationOrPageAction(table: Table): void{
-        if (table.user.isBlackJack() || table.user.getHandScore() > 21 || this.isAutomaticActionBtn(table)){
+        if (table.getUser().isBlackJack() || table.getUser().getHandScore() > 21 || this.isAutomaticActionBtn(table)){
             table.haveTurn();
             Controller.mainTable(table);
         }
@@ -922,7 +965,7 @@ class Controller{
     }
 
     static isAutomaticActionBtn(table: Table): boolean{
-        if(table.user.gameStatus === 'surrender' || table.user.gameStatus === 'stand' || table.user.gameStatus === 'double') return true;
+        if(table.getUser().getGameStatus() === 'surrender' || table.getUser().getGameStatus() === 'stand' || table.getUser().getGameStatus() === 'double') return true;
         return false;
     }
 
@@ -938,11 +981,11 @@ class Controller{
         const surrenderBtn =<HTMLInputElement> action.querySelector("#surrender-btn");
         const doubleBtn = <HTMLInputElement>action.querySelector("#double-btn");
 
-        if (table.user.gameStatus === 'hit'){
+        if (table.getUser().getGameStatus() === 'hit'){
             surrenderBtn.classList.add('disabled');
             doubleBtn.classList.add('disabled');
         }
-        if (table.user.hand.length > 2 || table.levelType == 'hard'){
+        if (table.getUser().getHand().length > 2 || table.getLevelType() == 'hard'){
             autoBtn.classList.add('disabled');
         }
 
@@ -955,10 +998,10 @@ class Controller{
     
     static autoBtn(table: Table, hitBtn: HTMLInputElement): void{
         hitBtn.addEventListener("click", function(){
-            table.user.gameStatus = table.basicStrategy();
-            const userGameStatus = table.user.gameStatus;
+            table.getUser().setGameStatus(table.basicStrategy());
+            const userGameStatus = table.getUser().getGameStatus();
             if (Controller.isDrawOneAction(userGameStatus)){
-                table.user.hand.push(table.deck.drawOne());
+                table.getUser().getHand().push(table.getDeck().drawOne());
             }
             Controller.mainTable(table);
         })
@@ -971,30 +1014,30 @@ class Controller{
 
     static hitBtn(table: Table, hitBtn: HTMLInputElement): void{
         hitBtn.addEventListener("click", function(){
-            table.user.gameStatus = 'hit';
-            table.user.hand.push(table.deck.drawOne());
+            table.getUser().setGameStatus('hit');
+            table.getUser().getHand().push(table.getDeck().drawOne());
             Controller.mainTable(table);
         })
     }
     
     static standBtn(table: Table, standBtn: HTMLInputElement): void{
         standBtn.addEventListener("click", function(){
-            table.user.gameStatus = 'stand';
+            table.getUser().setGameStatus('stand');
             Controller.mainTable(table);
         })
     }
     
     static surrenderBtn(table: Table, surrenderBtn: HTMLInputElement): void{
         surrenderBtn.addEventListener("click", function(){
-            table.user.gameStatus = 'surrender';
+            table.getUser().setGameStatus('surrender');
             Controller.mainTable(table);
         })
     }
     
     static doubleBtn(table: Table, doubleBtn: HTMLInputElement): void{
         doubleBtn.addEventListener("click", function(){
-            table.user.gameStatus = 'double';
-            table.user.hand.push(table.deck.drawOne());
+            table.getUser().setGameStatus('double');
+            table.getUser().getHand().push(table.getDeck().drawOne());
             Controller.mainTable(table);
         })
 
